@@ -1,13 +1,13 @@
-# [Titlul proiectului]
+# Log Analiser
 
 Proiect individual la disciplina Metode avansate de programare, anul universitar 2026-2027.
 
 ## Autor
 
-- **Nume:** [Nume Prenume]
-- **Grupa:** [grupa]
-- **Marca:** [marca]
-- **Tema:** [numarul temei] - [titlul temei]
+- **Nume:** Radu Gabriel-Claudiu
+- **Grupa:** 2.1
+- **Marca:** LH715705
+- **Tema:** Tema 9 - Analizor de log-uri
 
 ## Descriere
 
