@@ -11,9 +11,9 @@ RUN cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
 
 # Stage 2 - runtime. A bare Debian plus the statically linked binary.
 FROM debian:bookworm-slim
-LABEL org.opencontainers.image.title="MAP proiect" \
-      org.opencontainers.image.authors="Nume Prenume <email@student.upt.ro>" \
-      org.opencontainers.image.source="https://github.com/utilizator/repo"
+LABEL org.opencontainers.image.title="log-analiser" \
+      org.opencontainers.image.authors="Radu Gabriel Claudiu <gabriel-claudiu.radu@student.upt.ro>" \
+      org.opencontainers.image.source="https://github.com/GabrielCRadu/log-analiser"
 
 ARG COMMIT=dev
 ARG BUILT_AT=unknown
