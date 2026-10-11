@@ -8,3 +8,8 @@ coverage/
 .env
 *.pem
 *.key
+
+# Editor
+.vscode/
+.cache/
+compile_commands.json
