@@ -11,7 +11,7 @@
 
 namespace map_project {
 
-inline constexpr const char* kAppName = "map-project";
+inline constexpr const char* kAppName = "log-analiser";
 inline constexpr const char* kAppVersion = "0.1.0";
 
 /// Reads an environment variable, falling back when it is missing or empty.
@@ -73,8 +73,8 @@ inline std::string HomePage() {
 <html lang="ro"><head><meta charset="utf-8"><title>)") + kAppName + R"(</title></head>
 <body>
 <h1>)" + kAppName + R"(</h1>
-<p>Autor: NUME PRENUME, grupa GRUPA</p>
-<p>Tema: NUMARUL TEMEI</p>
+<p>Autor: Radu Gabriel Claudiu, grupa 2.1</p>
+<p>Tema: 9</p>
 <p>Versiune: )" + kAppVersion + ", commit " + Env("APP_COMMIT", "dev") + R"(</p>
 </body></html>)";
 }
