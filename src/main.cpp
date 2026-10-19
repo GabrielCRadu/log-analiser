@@ -51,6 +51,12 @@ int main() {
         response.set_content(result.body.dump(), "application/json; charset=utf-8");
     });
 
+    server.Get("/stats", [&](const httplib::Request&, httplib::Response& response) {
+        const ApiResponse result = GetStats(logs);
+        response.status = result.status;
+        response.set_content(result.body.dump(), "application/json; charset=utf-8");
+    });
+
     server.set_error_handler([](const httplib::Request&, httplib::Response& response) {
         if (response.status == 404) {
             response.set_content(ErrorBody("not_found", "route does not exist").dump(),
