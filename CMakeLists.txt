@@ -44,7 +44,7 @@ if(BUILD_TESTS)
     GIT_SHALLOW TRUE)
   FetchContent_MakeAvailable(doctest)
 
-  add_executable(tests tests/test_app.cpp tests/test_log_parser.cpp)
+  add_executable(tests tests/test_app.cpp tests/test_log_parser.cpp tests/test_log_store.cpp)
   target_include_directories(tests PRIVATE src)
   target_link_libraries(tests PRIVATE doctest::doctest nlohmann_json::nlohmann_json)
 
