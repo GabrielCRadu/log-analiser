@@ -157,4 +157,32 @@ inline ApiResponse GetEntries(const LogStore& store,
     return {200, list};
 }
 
+/// GET /stats. Counts every level, even the ones with zero lines. "first" and
+/// "last" are the timestamps of the earliest and latest line, or null when empty.
+inline ApiResponse GetStats(const LogStore& store) {
+    const auto all = store.Query(std::nullopt, std::nullopt, std::nullopt);
+
+    int debug = 0, info = 0, warn = 0, error = 0;
+    for (const auto& entry : all) {
+        switch (entry.line.level) {
+            case LogLevel::Debug: ++debug; break;
+            case LogLevel::Info: ++info; break;
+            case LogLevel::Warn: ++warn; break;
+            case LogLevel::Error: ++error; break;
+        }
+    }
+
+    nlohmann::json body = {
+        {"total", static_cast<int>(all.size())},
+        {"by_level", {{"DEBUG", debug}, {"INFO", info}, {"WARN", warn}, {"ERROR", error}}},
+        {"first", nullptr},
+        {"last", nullptr},
+    };
+    if (!all.empty()) {
+        body["first"] = all.front().line.timestamp;
+        body["last"] = all.back().line.timestamp;
+    }
+    return {200, body};
+}
+
 }  // namespace map_project
