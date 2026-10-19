@@ -7,6 +7,8 @@
 #include <httplib.h>
 
 #include "app.hpp"
+#include "admin_auth.hpp"
+#include "alerts.hpp"
 #include "log_store.hpp"
 
 int main() {
@@ -54,6 +56,20 @@ int main() {
     server.Get("/stats", [&](const httplib::Request&, httplib::Response& response) {
         const ApiResponse result = GetStats(logs);
         response.status = result.status;
+        response.set_content(result.body.dump(), "application/json; charset=utf-8");
+    });
+
+    server.Get("/alerts", [&](const httplib::Request&, httplib::Response& response) {
+        const ApiResponse result = GetAlerts(logs);
+        response.status = result.status;
+        response.set_content(result.body.dump(), "application/json; charset=utf-8");
+    });
+
+    server.Get("/admin/stats", [&](const httplib::Request& request, httplib::Response& response) {
+        const ApiResponse result = GetAdminStats(logs, request.get_header_value("Authorization"),
+                                                 Env("ADMIN_USER", ""), Env("ADMIN_PASSWORD", ""));
+        response.status = result.status;
+        if (result.status == 401) response.set_header("WWW-Authenticate", "Basic realm=\"admin\"");
         response.set_content(result.body.dump(), "application/json; charset=utf-8");
     });
 
