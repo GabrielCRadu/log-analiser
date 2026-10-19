@@ -189,3 +189,55 @@ TEST_CASE("get entries entry has id timestamp level and message") {
     CHECK(response.body[0]["level"] == "ERROR");
     CHECK(response.body[0]["message"] == "Connection refused");
 }
+
+TEST_CASE("stats on an empty store has zero counts and null first and last") {
+    LogStore store;
+    const auto response = GetStats(store);
+
+    CHECK(response.status == 200);
+    CHECK(response.body["total"] == 0);
+    CHECK(response.body["by_level"]["DEBUG"] == 0);
+    CHECK(response.body["by_level"]["INFO"] == 0);
+    CHECK(response.body["by_level"]["WARN"] == 0);
+    CHECK(response.body["by_level"]["ERROR"] == 0);
+    CHECK(response.body["first"].is_null());
+    CHECK(response.body["last"].is_null());
+}
+
+TEST_CASE("stats counts lines per level and includes levels with zero") {
+    LogStore store;
+    PostLogs(store, R"({"content":"2026-03-14 09:00:00 INFO a\n2026-03-14 09:01:00 ERROR b\n2026-03-14 09:02:00 ERROR c\n"})");
+
+    const auto response = GetStats(store);
+
+    CHECK(response.body["total"] == 3);
+    CHECK(response.body["by_level"]["INFO"] == 1);
+    CHECK(response.body["by_level"]["ERROR"] == 2);
+    CHECK(response.body["by_level"]["DEBUG"] == 0);
+    CHECK(response.body["by_level"]["WARN"] == 0);
+}
+
+TEST_CASE("stats first and last follow time, not upload order") {
+    LogStore store;
+    PostLogs(store, R"({"content":"2026-03-14 09:10:00 INFO late\n2026-03-14 09:00:00 INFO early\n"})");
+
+    const auto response = GetStats(store);
+
+    CHECK(response.body["first"] == "2026-03-14T09:00:00");
+    CHECK(response.body["last"] == "2026-03-14T09:10:00");
+}
+
+TEST_CASE("stats do not count ignored lines") {
+    LogStore store;
+    PostLogs(store, R"({"content":"garbage\n2026-03-14 09:00:00 WARN a\n"})");
+
+    CHECK(GetStats(store).body["total"] == 1);
+}
+
+TEST_CASE("stats with a single line has equal first and last") {
+    LogStore store;
+    PostLogs(store, R"({"content":"2026-03-14 09:00:00 DEBUG a"})");
+
+    const auto response = GetStats(store);
+    CHECK(response.body["first"] == response.body["last"]);
+}
